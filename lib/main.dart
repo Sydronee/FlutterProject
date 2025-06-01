@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() => runApp(MyApp());
 
-const versionUrl = 'https://raw.githubusercontent.com/Sydronee/FlutterProject/dev/version.json';
+const versionUrl = 'https://raw.githubusercontent.com/Sydronee/FlutterProject/Dev/version.json';
 
 class MyApp extends StatefulWidget {
   @override
