@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 void main() => runApp(MyApp());
 
@@ -41,19 +41,19 @@ class _MyAppState extends State<MyApp> {
       final remoteVersion = versionData['version'];
       final layoutUrl = versionData['layout_url'];
 
-      final prefs = await SharedPreferences.getInstance();
-      final localVersion = prefs.getString('version') ?? '0.0.0';
+      final info = await PackageInfo.fromPlatform();
+      final appVersion = info.version;
 
-      if (remoteVersion != localVersion) {
-        // New version found
-        currentVersion = remoteVersion;
-        await prefs.setString('version', remoteVersion);
-        await fetchLayout(layoutUrl);
-      } else {
-        // No new version, still fetch layout to load UI
-        currentVersion = remoteVersion;
-        await fetchLayout(layoutUrl);
+      currentVersion = appVersion;
+
+      if (remoteVersion != appVersion) {
+        // New version available (remote is different)
+        print('App version ($appVersion) is outdated. Latest is $remoteVersion');
+        // You can show an update prompt here if needed
       }
+
+      // Always fetch layout to reflect UI changes
+      await fetchLayout(layoutUrl);
     } catch (e) {
       setState(() {
         title = "Error checking updates";
@@ -102,7 +102,6 @@ class _MyAppState extends State<MyApp> {
             children: [
               if (bannerUrl != null)
                 Image.network(
-                  // Append version as cache-busting query param
                   '$bannerUrl?v=$currentVersion',
                   errorBuilder: (context, error, stackTrace) => Text('Failed to load image'),
                 ),
