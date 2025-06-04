@@ -43,6 +43,7 @@ class _MyAppState extends State<MyApp> {
 
       final info = await PackageInfo.fromPlatform();
       final appVersion = info.version;
+      print("Local app version: $appVersion");
 
       currentVersion = appVersion;
 
